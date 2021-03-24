@@ -62,6 +62,7 @@ def dijkstra(grafo, origem, destino=None):
 
     return distancia, antecessor
 
+# Faz o cálculo do menor caminho
 def menor_caminho(pr, vertice):  
     p = []
     while vertice is not None:
@@ -99,45 +100,77 @@ def main(argv):
             # Separa a linha em 3 "partes"
             line = line.strip().split('\t')
             
-            # Cria um tuple
-            # Contendo: Origem, Destino e Peso
-            aresta = (str(line[0]), str(line[1]), int(line[2]))
+            if len(line) == 3:
+                # Cria uma estrutura contendo: ORIGEM, DESTINO, PESO (caso ponderado)
+                aresta = (str(line[0]), str(line[1]), int(line[2]))
+                mostraDistancia = True
+            else:
+                # Cria uma estrutura contendo: ORIGEM, DESTINO (caso não ponderado)
+                aresta = (str(line[0]), str(line[1]), 0)
+                mostraDistancia = False
+
             arestas.append(aresta)
 
+        # Cria o grafo e a lista de nós filtrados
+        g = cria_grafo(arestas)
+        nos = nos_filtrados(g)
+
+        print("\nCalculando...")
+
         # Se o usuário digitou ORIGEM e DESTINO
-        if origem is not '' and destino is not '':
-            # Cria o grafo e a lista de nós filtrados
-            g = cria_grafo(arestas)
-            nos = nos_filtrados(g)
+        if origem != '' and destino != '':
+            # Inicializa o contador de tempo de execução
+            start_time = time.time()
 
             # Calcula o menor caminho
             d, antecessor = dijkstra(g, str(origem), str(destino))
             caminho = menor_caminho(antecessor, str(destino))
 
-            # Imprime os resultados para o usuário
-            print('=== Menor Caminho (Origem -> Destino) ===')
-            print('{} -> {} | distancia: {} | menor caminho: {}'.format(origem, destino, d, caminho))
+            # Finaliza o contador de tempo de execução
+            end_time = time.time()
+            tempo_execucao = end_time - start_time
+
+            # Imprime o resultado para o usuário
+            print('\n=== Resultado === ')
+            if mostraDistancia:
+                print('{} -> {} | distancia: {} | tempo execução: {} s | menor caminho: {}'.format(origem, destino, d, round(tempo_execucao,2), caminho))
+            else:
+                print('{} -> {} | tempo execução: {} s | menor caminho: {}'.format(origem, destino, round(tempo_execucao,2), caminho))
 
         # Se o usuário digitou somente ORIGEM
-        if origem is not '' and destino is '':
-            print("Digitou somente origem")
+        if origem != '' and destino == '':
+            # Inicializa o contador de tempo de execução
+            start_time_total = time.time()
 
-        # print('=== Caminho Minimo (Origem -> Destino) ===')
+            print('\n=== Resultado ===')
+            # Percorre todos os vértices do grafo
+            for n in nos:
+                # Se o vértice for igual a origem, não calcula
+                if n != origem:
+                    # Inicializa o contador de tempo de execução
+                    start_time = time.time()
 
-        # print('')
-        # print('=== Matriz Distancias ===')
-        # header = '\t'
-        # distancias = ''
-        # for no in nos:
-        #     ds, antecessor = dijkstra(g, no)
-        #     header += no + '\t'
-        #     distancias += no + '\t'
-        #     for k in ds:
-        #         distancias += str(ds[k]) + '\t'
-        #     distancias += '\n'
+                    # Calcula o menor caminho
+                    d, antecessor = dijkstra(g, str(origem), str(n))
+                    caminho = menor_caminho(antecessor, str(n))
 
-        # print(nos)
+                    # Finaliza o contador de tempo de execução
+                    end_time = time.time()
+                    tempo_execucao = end_time - start_time
 
+                    # Imprime o resultado para o usuário
+                    if mostraDistancia:
+                        print('{} -> {} | distancia: {} | tempo execução: {} s | menor caminho: {}'.format(origem, n, d, round(tempo_execucao,2), caminho))
+                    else:
+                        print('{} -> {} | tempo execução: {} s | menor caminho: {}'.format(origem, n, round(tempo_execucao,2), caminho))
+
+            # Finaliza o contador de tempo de execução
+            end_time_total = time.time()
+            tempo_execucao_total = end_time - start_time
+
+            # Imprime o tempo de execução total
+            print('\nTempo Execução Total: {} s'.format(round(tempo_execucao_total,2)))
+            
     # Fecha o arquivo
     fd.close()
 
