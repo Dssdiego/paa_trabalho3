@@ -21,6 +21,7 @@ def cria_grafo(arestas):
         grafo[destino].append((origem, weight))  
     return grafo
 
+# Nós "filtrados"
 def nos_filtrados(grafo):
     vertices = []
     for n in grafo:
@@ -31,6 +32,8 @@ def nos_filtrados(grafo):
     return q
 
 # Executa o algoritmo de Dijkstra dado uma origem e um destino
+# Para os casos em que o grafo é não ponderado, ou seja, não possui
+# peso, o peso informado é 0
 def dijkstra(grafo, origem, destino=None):
     vertices = []
     for n in grafo:
@@ -74,6 +77,7 @@ def main(argv):
     # Salva o caminho do arquivo
     arquivo = argv[0]
 
+    # Imprime um header simples
     print("##########################")
     print("#   Trabalho Prático 3   #")
     print("#                        #")
@@ -88,18 +92,23 @@ def main(argv):
 
     # Abre o arquivo
     with open(arquivo, "r") as fd:
-        # Pula as 2 primeiras linhas
+        # Pula as 2 primeiras linhas do arquivo lido
         next(fd)
         next(fd)
 
-        # Inicializa uma lista de arestas
+        # Inicializa uma lista de arestas vazia
         arestas = []
 
         # Percorre as linhas do arquivo
         for line in fd:
-            # Separa a linha em 3 "partes"
+            # Separa a linha em 3 "partes" usando TABS
+            # É necessário que todo arquivo passado esteja no
+            # mesmo formato dos arquivos de teste enviados 
+            # (dados separados por TABS)
             line = line.strip().split('\t')
             
+            # Verifica se a linha atual possui o elemento de peso
+            # (ponderado ou não ponderado)
             if len(line) == 3:
                 # Cria uma estrutura contendo: ORIGEM, DESTINO, PESO (caso ponderado)
                 aresta = (str(line[0]), str(line[1]), int(line[2]))
@@ -109,12 +118,15 @@ def main(argv):
                 aresta = (str(line[0]), str(line[1]), 0)
                 mostraDistancia = False
 
+            # Adiciona a estrutura da aresta atual na lista de arestas
             arestas.append(aresta)
 
-        # Cria o grafo e a lista de nós filtrados
+        # Cria o grafo e a lista de nós
         g = cria_grafo(arestas)
         nos = nos_filtrados(g)
 
+        # Mostra um feedback pro usuário que o 
+        # script está rodando
         print("\nCalculando...")
 
         # Se o usuário digitou ORIGEM e DESTINO
@@ -174,5 +186,6 @@ def main(argv):
     # Fecha o arquivo
     fd.close()
 
+# Ponto de partida do script
 if __name__ == "__main__":
    main(sys.argv[1:])
