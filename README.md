@@ -13,13 +13,13 @@ Requisitos: **Python v3.9.1**
 Para rodar o projeto, execute o comando abaixo passando *via linha de comando, como parâmetro*, o nome do arquivo desejado.
 
 ```python
-python3 transacoesBitcoin.txt 
+python3 trabalho3.py transacoesBitcoin.txt 
 ```
 
 ou 
 
 ```python
-python transacoesBitcoin.txt
+python trabalho3.py transacoesBitcoin.txt
 ```
 
 Outras informações serão solicitadas em **runtime**.
